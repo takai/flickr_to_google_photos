@@ -1,40 +1,35 @@
 #!/usr/bin/env ruby -I lib
 
-require 'net/http'
-
-class Net::HTTP
-  alias :create :initialize
-
-  def initialize(*args)
-    create(*args)
-    self.set_debug_output $stderr
-    $stderr.sync = true
-  end
-end
-
 require 'bundler'
-Bundler.setup(:default)
+Bundler.require(:default)
 
 require 'dotenv'
-require 'oauth'
+require 'flickraw'
 
 Dotenv.load
 
-FLICKR_API   = 'https://www.flickr.com/services'
-CALLBACK_URL = "oob"
+FlickRaw.api_key       = ENV['FLICKR_CONSUMER_KEY']
+FlickRaw.shared_secret = ENV['FLICKR_CONSUMER_SECRET']
 
-consumer = OAuth::Consumer.new(ENV['FLICKR_KEY'], ENV['FLICKR_SECRET'], site: FLICKR_API)
-request_token = consumer.get_request_token(oauth_callback: CALLBACK_URL)
+@flickr = FlickRaw::Flickr.new
+token = @flickr.get_request_token
+auth_url = @flickr.get_authorize_url(token['oauth_token'])
 
-url = request_token.authorize_url(oauth_callback: CALLBACK_URL)
-`open "#{url}"`
+system("open #{auth_url}")
 
-print 'oauth verifier: '
-oauth_verifier = gets.chomp
+print "code: "
+verify = gets.strip
 
-session = {}
-session[:oauth_token] = request_token.token
-session[:oauth_token_secret] = request_token.secret
+@flickr.get_access_token(token['oauth_token'],
+                         token['oauth_token_secret'],
+                         verify)
+login = @flickr.test.login
 
-request_token = OAuth::RequestToken.from_hash(consumer, session)
-access_token = request_token.get_access_token(oauth_verifier: oauth_verifier)
+puts <<-EOF
+
+You are now authenticated as #{login.username}.
+Put follow lines to .env file.
+
+FLICKR_ACCESS_TOKEN=#{@flickr.access_token}
+FLICKR_ACCESS_TOKEN_SECRET=#{@flickr.access_secret}
+EOF

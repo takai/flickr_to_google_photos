@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'oauth'
+gem 'flickraw'
 gem 'dotenv'
 
 group :test do
