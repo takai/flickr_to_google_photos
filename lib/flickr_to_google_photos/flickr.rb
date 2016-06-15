@@ -19,13 +19,13 @@ module FlickrToGooglePhotos
     def each
       count = info['photos']['count']
 
-      count.quo(PER_PAGE).ceil.times do |i|
-        get_photos(page: i + 1).each do |photo|
-          yield photo
+      Enumerator.new do |yielder|
+        count.quo(PER_PAGE).ceil.times do |i|
+          get_photos(page: i + 1).each do |photo|
+            yielder << photo
+          end
         end
       end
-
-      self
     end
 
     private
