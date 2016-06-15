@@ -1,5 +1,7 @@
-require "flickr_to_google_photos/version"
+require 'flickraw'
+require 'dotenv'
 
-module FlickrToGooglePhotos
-  # Your code goes here...
-end
+Dotenv.load
+
+require "flickr_to_google_photos/version"
+require "flickr_to_google_photos/flickr"
