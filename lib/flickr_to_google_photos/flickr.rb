@@ -17,13 +17,13 @@ module FlickrToGooglePhotos
     end
 
     def each
+      return to_enum(:each) unless block_given?
+
       count = info['photos']['count']
 
-      Enumerator.new do |yielder|
-        count.quo(PER_PAGE).ceil.times do |i|
-          get_photos(page: i + 1).each do |photo|
-            yielder << photo
-          end
+      count.quo(PER_PAGE).ceil.times do |i|
+        get_photos(page: i + 1).each do |photo|
+          yield photo
         end
       end
     end
