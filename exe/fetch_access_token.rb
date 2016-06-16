@@ -28,7 +28,7 @@ login = @flickr.test.login
 puts <<-EOF
 
 You are now authenticated as #{login.username}.
-Put follow lines to .env file.
+Put the following lines in your .env file.
 
 FLICKR_ACCESS_TOKEN=#{@flickr.access_token}
 FLICKR_ACCESS_TOKEN_SECRET=#{@flickr.access_secret}
