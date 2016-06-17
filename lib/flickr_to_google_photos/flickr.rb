@@ -23,7 +23,9 @@ module FlickrToGooglePhotos
 
       count.quo(PER_PAGE).ceil.times do |i|
         get_photos(page: i + 1).each do |photo|
-          yield photo
+          info = flickr.photos.getInfo(photo_id: photo.id, secret: photo.secret)
+
+          yield FlickRaw.url_o(info)
         end
       end
     end
