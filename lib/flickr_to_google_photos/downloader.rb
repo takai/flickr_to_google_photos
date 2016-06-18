@@ -3,8 +3,8 @@ module FlickrToGooglePhotos
     DOWNLOAD_CONCURRENCY = ENV['DOWNLOAD_CONCURRENCY'] || 3
     DOWNLOAD_DIR =  Dir.tmpdir
 
-    def initialize(queue)
-      @queue = queue
+    def initialize
+      @queue = Queue.new
       @http = HTTPClient.new
       @pool = Concurrent::FixedThreadPool.new(DOWNLOAD_CONCURRENCY)
     end
@@ -28,6 +28,10 @@ module FlickrToGooglePhotos
       @queue.num_waiting.times do
         @queue.push(nil)
       end
+    end
+
+    def push(url)
+      @queue.push(url)
     end
   end
 end
