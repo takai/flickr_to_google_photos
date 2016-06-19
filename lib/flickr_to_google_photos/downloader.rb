@@ -15,9 +15,7 @@ module FlickrToGooglePhotos
             break unless url
 
             path = File.join(Dir.tmpdir, File.basename(url))
-            File.open(path, 'wb') do |file|
-              file.write(@http.get(url).body)
-            end
+            File.binwrite(path, @http.get(url).body)
           end
         end
       end
