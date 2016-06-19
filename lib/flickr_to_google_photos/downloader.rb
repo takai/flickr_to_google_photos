@@ -1,7 +1,6 @@
 module FlickrToGooglePhotos
   class Downloader
     DOWNLOAD_CONCURRENCY = ENV['DOWNLOAD_CONCURRENCY'] || 3
-    DOWNLOAD_DIR =  Dir.tmpdir
 
     def initialize
       @queue = Queue.new
