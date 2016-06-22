@@ -19,10 +19,10 @@ module FlickrToGooglePhotos
     def each
       return to_enum(:each) unless block_given?
 
-      count = info['photos']['count']
+      count = people_info['photos']['count']
 
       count.quo(PER_PAGE).ceil.times do |i|
-        get_photos(page: i + 1).each do |photo|
+        people_photos(page: i + 1).each do |photo|
           info = flickr.photos.getInfo(photo_id: photo.id, secret: photo.secret)
 
           yield FlickRaw.url_o(info)
@@ -35,11 +35,11 @@ module FlickrToGooglePhotos
       @_login ||= @flickr.test.login
     end
 
-    def info
+    def people_info
       @_info ||= @flickr.people.getInfo(user_id: login['id'])
     end
 
-    def get_photos(page:)
+    def people_photos(page:)
       @flickr.people.getPhotos(user_id: login['id'],
                                per_page: PER_PAGE,
                                page: page)
