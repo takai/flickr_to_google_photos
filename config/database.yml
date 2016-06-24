@@ -1,0 +1,10 @@
+main:
+  adapter: sqlite3
+  database: tmp/main.sqlite3
+  pool: 5
+  timeout: 5000
+test:
+  adapter: sqlite3
+  database: tmp/test.sqlite3
+  pool: 5
+  timeout: 5000
