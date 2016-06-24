@@ -10,12 +10,15 @@ CREATE TABLE albums (
   description TEXT
 );
 
+DROP TABLE IF EXISTS photos;
+
 CREATE TABLE photos (
-  id       INTEGER PRIMARY KEY AUTOINCREMENT,
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
 
-  title    TEXT,
-  url      TEXT,
+  title      TEXT,
+  url        TEXT,
 
-  public   INTEGER             DEFAULT 0,
-  uploaded INTEGER             DEFAULT 0
+  public     INTEGER             DEFAULT 0,
+  downloaded INTEGER             DEFAULT 0,
+  uploaded   INTEGER             DEFAULT 0
 );
