@@ -10,11 +10,11 @@ require 'dotenv'
 
 Dotenv.load
 
-require "flickr_to_google_photos/version"
-require "flickr_to_google_photos/downloader"
+require 'flickr_to_google_photos/version'
+require 'flickr_to_google_photos/downloader'
 
-require "flickr_to_google_photos/api/flickr"
-require "flickr_to_google_photos/api/google_photos"
+require 'flickr_to_google_photos/api/flickr'
+require 'flickr_to_google_photos/api/google_photos'
 
 require 'flickr_to_google_photos/model/album'
 require 'flickr_to_google_photos/model/photo'
