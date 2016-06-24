@@ -2,6 +2,11 @@ module FlickrToGooglePhotos
   class Downloader
     DOWNLOAD_CONCURRENCY = ENV['DOWNLOAD_CONCURRENCY'] || 3
 
+    def self.download(url)
+      @downloader ||= new
+      @downloader.push(url)
+    end
+
     def initialize
       @queue = Queue.new
       @http = HTTPClient.new
