@@ -16,7 +16,7 @@ module FlickrToGooglePhotos
       @flickr.access_secret = access_secret
     end
 
-    def each
+    def each_photos
       return to_enum(:each) unless block_given?
 
       count = people_info['photos']['count']
@@ -24,8 +24,11 @@ module FlickrToGooglePhotos
       count.quo(PER_PAGE).ceil.times do |i|
         people_photos(page: i + 1).each do |photo|
           info = photos_info(photo)
+          model = FlickrToGooglePhotos::Model::Photo.new(title: info.title,
+                                                         url: FlickRaw.url_o(info),
+                                                         public: info.visibility.ispublic)
 
-          yield FlickRaw.url_o(info)
+          yield model
         end
       end
     end
