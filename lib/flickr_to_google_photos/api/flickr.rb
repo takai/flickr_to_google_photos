@@ -16,6 +16,17 @@ module FlickrToGooglePhotos
       @flickr.access_secret = access_secret
     end
 
+    def each_albums
+      return to_enum(:each_albums) unless block_given?
+
+      photosets_list.each do |set|
+        model = FlickrToGooglePhotos::Model::Album.new(flickr_id: set.id,
+                                                       title: set.title,
+                                                       description: set.description)
+        yield(model)
+      end
+    end
+
     def each_photos
       return to_enum(:each_photos) unless block_given?
 
@@ -51,6 +62,10 @@ module FlickrToGooglePhotos
 
     def photos_info(photo)
       @flickr.photos.getInfo(photo_id: photo.id, secret: photo.secret)
+    end
+
+    def photosets_list
+      @_photosets_list ||= @flickr.photosets.getList
     end
   end
 end
