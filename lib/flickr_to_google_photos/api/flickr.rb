@@ -17,7 +17,7 @@ module FlickrToGooglePhotos
     end
 
     def each_photos
-      return to_enum(:each) unless block_given?
+      return to_enum(:each_photos) unless block_given?
 
       count = people_info['photos']['count']
 
