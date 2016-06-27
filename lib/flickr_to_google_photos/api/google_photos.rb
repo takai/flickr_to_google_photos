@@ -6,6 +6,11 @@ module FlickrToGooglePhotos
       @picasa = Picasa::Client.new(user_id: user_id, access_token: access_token)
     end
 
+    def create_album(album)
+      created = @picasa.album.create(title: album.title, summary: album.description, access: :private)
+      album.update(google_photo_id: created.id)
+    end
+
     private
 
     def fetch_access_token(client_id, client_secret, refresh_token)
