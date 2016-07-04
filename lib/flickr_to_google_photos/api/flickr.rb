@@ -27,6 +27,15 @@ module FlickrToGooglePhotos
       end
     end
 
+    def each_photos_by_album(album)
+      return to_enum(:each_photos_by_album) unless block_given?
+
+      photosets_photos(album.flickr_id).photo.each do |photo|
+        model = build_photo_model(photo)
+        yield(model)
+      end
+    end
+
     def each_photos
       return to_enum(:each_photos) unless block_given?
 
@@ -34,12 +43,8 @@ module FlickrToGooglePhotos
 
       count.quo(PER_PAGE).ceil.times do |i|
         people_photos(page: i + 1).each do |photo|
-          info = photos_info(photo)
-          model = FlickrToGooglePhotos::Model::Photo.new(title: info.title,
-                                                         url: FlickRaw.url_o(info),
-                                                         public: info.visibility.ispublic)
-
-          yield model
+          model = build_photo_model(photo)
+          yield(model)
         end
       end
     end
@@ -66,6 +71,17 @@ module FlickrToGooglePhotos
 
     def photosets_list
       @_photosets_list ||= @flickr.photosets.getList
+    end
+
+    def photosets_photos(flickr_photoset_id)
+      @_photosets_photos ||= @flickr.photosets.getPhotos(photoset_id: flickr_photoset_id)
+    end
+
+    def build_photo_model(photo)
+      info = photos_info(photo)
+      FlickrToGooglePhotos::Model::Photo.new(title: info.title,
+                                             url: FlickRaw.url_o(info),
+                                             public: info.visibility.ispublic)
     end
   end
 end
