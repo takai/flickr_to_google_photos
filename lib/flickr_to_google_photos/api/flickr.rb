@@ -8,10 +8,7 @@ module FlickrToGooglePhotos
     PER_PAGE = 500
 
     def initialize(consumer_key, consumer_secret, access_token, access_secret)
-      FlickRaw.api_key = consumer_key
-      FlickRaw.shared_secret = consumer_secret
-
-      @flickr = FlickRaw::Flickr.new
+      @flickr = ::FlickRaw::Flickr.new(api_key: consumer_key, shared_secret: consumer_secret)
       @flickr.access_token = access_token
       @flickr.access_secret = access_secret
     end
