@@ -33,6 +33,15 @@ module FlickrToGooglePhotos
       end
     end
 
+    def each_photos_not_in_set
+      return to_enum(:each_photos_not_in_set) unless block_given?
+
+      photos_not_in_set.each do |photo|
+        model = build_photo_model(photo)
+        yield(model)
+      end
+    end
+
     def each_photos
       return to_enum(:each_photos) unless block_given?
 
@@ -64,6 +73,15 @@ module FlickrToGooglePhotos
 
     def photos_info(photo)
       @flickr.photos.getInfo(photo_id: photo.id, secret: photo.secret)
+    end
+
+    def photos_not_in_set(page: 1, photos: [])
+      resp = @flickr.photos.getNotInSet(page: page, per_page: PER_PAGE)
+      if resp['pages'] < page
+        photos + resp.photo
+      else
+        photos_not_in_set(page: page + 1, photos: resp.photo)
+      end
     end
 
     def photosets_list
