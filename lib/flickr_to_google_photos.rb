@@ -21,7 +21,7 @@ require 'flickr_to_google_photos/model/photo'
 
 begin
   db = YAML.load_file(File.join(__dir__, '../config/database.yml'))
-  ActiveRecord::Base.establish_connection(db[ENV['environment'] || 'main'])
+  ActiveRecord::Base.establish_connection(db[ENV['APP_ENV'] || 'test'])
 
   ddls = File.read(File.join(__dir__, '../config/ddl.sql'))
   ddls.gsub(/\n/, '').split(';').each do |ddl|
