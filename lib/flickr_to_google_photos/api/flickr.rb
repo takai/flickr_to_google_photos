@@ -25,10 +25,11 @@ module FlickrToGooglePhotos
     end
 
     def each_photos_by_album(album)
-      return to_enum(:each_photos_by_album) unless block_given?
+      return to_enum(:each_photos_by_album, album) unless block_given?
 
       photosets_photos(album.flickr_id).photo.each do |photo|
         model = build_photo_model(photo)
+        model.album = album
         yield(model)
       end
     end

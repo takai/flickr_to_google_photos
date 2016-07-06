@@ -15,6 +15,8 @@ DROP TABLE IF EXISTS photos;
 CREATE TABLE photos (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
 
+  album_id      INTEGER,
+
   title         TEXT,
   url           TEXT,
 
