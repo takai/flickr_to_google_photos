@@ -3,8 +3,8 @@ DROP TABLE IF EXISTS albums;
 CREATE TABLE albums (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
 
-  flickr_id   INTEGER,
-  google_id   INTEGER,
+  flickr_id   TEXT,
+  google_id   TEXT,
 
   title       TEXT NOT NULL       DEFAULT '',
   description TEXT
