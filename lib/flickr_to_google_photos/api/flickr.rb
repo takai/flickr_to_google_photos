@@ -27,7 +27,7 @@ module FlickrToGooglePhotos
     def each_photos_by_album(album)
       return to_enum(:each_photos_by_album, album) unless block_given?
 
-      photosets_photos(album.flickr_id).photo.each do |photo|
+      photosets_photos(album.flickr_id).each do |photo|
         model = build_photo_model(photo)
         model.album = album
         yield(model)
@@ -89,8 +89,13 @@ module FlickrToGooglePhotos
       @_photosets_list ||= @flickr.photosets.getList
     end
 
-    def photosets_photos(flickr_photoset_id)
-      @_photosets_photos ||= @flickr.photosets.getPhotos(photoset_id: flickr_photoset_id)
+    def photosets_photos(flickr_photoset_id, page: 1, photos: [])
+      resp = @flickr.photosets.getPhotos(photoset_id: flickr_photoset_id, page: page, per_page: PER_PAGE)
+      if resp['pages'] == page
+        photos + resp.photo
+      else
+        photosets_photos(flickr_photoset_id, page: page + 1, photos: resp.photo)
+      end
     end
 
     def build_photo_model(photo)
