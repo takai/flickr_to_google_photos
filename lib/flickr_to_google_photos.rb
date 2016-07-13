@@ -23,9 +23,11 @@ begin
   db = YAML.load_file(File.join(__dir__, '../config/database.yml'))
   ActiveRecord::Base.establish_connection(db[ENV['APP_ENV'] || 'test'])
 
-  ddls = File.read(File.join(__dir__, '../config/ddl.sql'))
-  ddls.gsub(/\n/, '').split(';').each do |ddl|
-    ActiveRecord::Base.connection.execute(ddl)
+  if ENV.has_key?('INIT_DB')
+    ddls = File.read(File.join(__dir__, '../config/ddl.sql'))
+    ddls.gsub(/\n/, '').split(';').each do |ddl|
+      ActiveRecord::Base.connection.execute(ddl)
+    end
   end
 rescue => e
   abort("Initialization error: #{e.message}")
