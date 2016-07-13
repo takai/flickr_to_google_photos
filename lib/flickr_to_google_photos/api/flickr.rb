@@ -17,9 +17,9 @@ module FlickrToGooglePhotos
       return to_enum(:each_albums) unless block_given?
 
       photosets_list.each do |set|
-        model = FlickrToGooglePhotos::Model::Album.new(flickr_id: set.id,
-                                                       title: set.title,
-                                                       description: set.description)
+        model = FlickrToGooglePhotos::Model::Album.find_or_create_by(flickr_id: set.id,
+                                                                     title: set.title,
+                                                                     description: set.description)
         yield(model)
       end
     end

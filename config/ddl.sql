@@ -7,7 +7,9 @@ CREATE TABLE albums (
   google_id   TEXT,
 
   title       TEXT NOT NULL       DEFAULT '',
-  description TEXT
+  description TEXT,
+
+  build_at    DATETIME            DEFAULT 0
 );
 
 DROP TABLE IF EXISTS photos;

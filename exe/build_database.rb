@@ -12,10 +12,13 @@ flickr = FlickrToGooglePhotos::Flickr.new(ENV['FLICKR_CONSUMER_KEY'],
 
 puts "Importing albums..."
 albums = flickr.each_albums
-albums.map(&:save)
 albums.each do |album|
-  puts "Importing '#{album.title}'..."
-  flickr.each_photos_by_album(album).map(&:save)
+  unless album.build_at?
+    puts "Importing '#{album.title}'..."
+    album.photos.delete_all
+    flickr.each_photos_by_album(album).map(&:save)
+    album.touch(:build_at)
+  end
 end
 
 flickr.each_photos_not_in_set.map(&:save)
