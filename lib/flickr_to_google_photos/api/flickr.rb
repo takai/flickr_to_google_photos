@@ -78,7 +78,7 @@ module FlickrToGooglePhotos
 
     def photos_not_in_set(page: 1, photos: [])
       resp = @flickr.photos.getNotInSet(page: page, per_page: PER_PAGE)
-      if resp['pages'] < page
+      if resp['pages'] == page
         photos + resp.photo
       else
         photos_not_in_set(page: page + 1, photos: resp.photo)
