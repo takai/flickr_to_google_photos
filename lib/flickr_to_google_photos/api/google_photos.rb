@@ -11,6 +11,16 @@ module FlickrToGooglePhotos
       album.update(google_photo_id: created.id)
     end
 
+    def upload_photo(album, photo, binary)
+      create_album(album) unless (album.google_id?)
+
+      @picasa.photo.create(album.google_id,
+                           binary: binary,
+                           content_type: 'image/jpeg',
+                           title: photo.title,
+                           summary: photo.description)
+    end
+
     private
 
     def fetch_access_token(client_id, client_secret, refresh_token)
