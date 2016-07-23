@@ -5,6 +5,7 @@ require 'signet/oauth_2/client'
 require 'picasa'
 require 'active_record'
 require 'yaml'
+require 'tempfile'
 
 require 'dotenv'
 

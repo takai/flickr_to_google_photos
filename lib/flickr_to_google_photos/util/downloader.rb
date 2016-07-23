@@ -3,25 +3,36 @@ module FlickrToGooglePhotos
     class Downloader
       DOWNLOAD_CONCURRENCY = ENV['DOWNLOAD_CONCURRENCY'] || 3
 
-      def self.download(url)
+      SAVE_TO_TEMP = -> (body) do
+        tmp = Tempfile.new('f2g')
+        File.binwrite(tmp.path, body)
+      end
+
+      def self.download(url, with: SAVE_TO_TEMP)
         @downloader ||= new
-        @downloader.push(url)
+        @downloader.push(url, with: with)
+        @downloader.start
       end
 
       def initialize
         @queue = Queue.new
-        @http = HTTPClient.new
         @pool = Concurrent::FixedThreadPool.new(DOWNLOAD_CONCURRENCY)
       end
 
       def start
         DOWNLOAD_CONCURRENCY.times do
           @pool.post do
-            while url = @queue.pop
-              break unless url
+            while command = @queue.pop
+              begin
+                url, proc = *command
+                break unless url
 
-              path = File.join(Dir.tmpdir, File.basename(url))
-              File.binwrite(path, @http.get(url).body)
+                body = HTTPClient.new.get(url).body
+
+                proc.call(body)
+              rescue e
+                warn(e.message)
+              end
             end
           end
         end
@@ -33,8 +44,8 @@ module FlickrToGooglePhotos
         end
       end
 
-      def push(url)
-        @queue.push(url)
+      def push(url, with: SAVE_TO_TEMP)
+        @queue.push([url, with])
       end
     end
   end
