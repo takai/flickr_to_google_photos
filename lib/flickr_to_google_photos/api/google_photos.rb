@@ -12,13 +12,18 @@ module FlickrToGooglePhotos
     end
 
     def upload_photo(album, photo, binary)
-      create_album(album) unless (album.google_id?)
+      if album.nil?
+        album = Model::Album.new
+      elsif album.google_id?
+        create_album(album)
+      end
 
-      @picasa.photo.create(album.google_id,
+      @picasa.photo.create(album.google_id || default_album.id,
                            binary: binary,
                            content_type: 'image/jpeg',
                            title: photo.title,
-                           summary: photo.description)
+                           summary: '')
+      photo.touch(:uploaded_at)
     end
 
     private
@@ -28,10 +33,15 @@ module FlickrToGooglePhotos
         client_id: client_id,
         client_secret: client_secret,
         token_credential_uri: "https://www.googleapis.com/oauth2/v3/token",
+        grant_type: 'refresh_token',
         refresh_token: refresh_token
       )
       client.refresh!
       client.access_token
+    end
+
+    def default_album
+      @default_album ||= @picasa.album.list.albums.first
     end
 
   end
