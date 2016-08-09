@@ -21,7 +21,7 @@ FlickrToGooglePhotos::Model::Photo.where(uploaded_at: 0).each do |photo|
     puts "Fetching #{photo.url}..."
     binary = HTTPClient.new.get(photo.url).body
     puts "Uploading #{photo.url}..."
-    photos.upload_photo(photo.album || default_album, photo, binary)
+    photos.upload_photo(photo.album, photo, binary)
   rescue Picasa::ForbiddenError => e
     photos = new_photos
   rescue Picasa::BadRequestError, Encoding::CompatibilityError => e
